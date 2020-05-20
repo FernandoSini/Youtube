@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtube/CustomSearchDelegate.dart';
 import 'package:youtube/telas/Biblioteca.dart';
 import 'package:youtube/telas/EmAlta.dart';
 import 'package:youtube/telas/Inicio.dart';
@@ -21,12 +22,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   int _indiceAtual = 0;
+  String _resultado = "";
+
   @override
   Widget build(BuildContext context) {
 
+    //enviar o resultado para a classe inicio
     //lista de telas(widgets)s, quando clicar no icone, carregar a pagina/telas
     List<Widget> telas = [
-      Inicio() ,
+      Inicio(_resultado),
       EmAlta(),
       Inscricao(),
       Biblioteca()
@@ -45,6 +49,9 @@ class _HomeState extends State<Home> {
         ),
         //definindo ações, que são botoões de açoes que vc pode configurar dentro da appBar
         actions: <Widget>[
+
+        /*
+        não será mais necessário pois vamos utilizar só a barra de pesquisa, por enquanto
          IconButton(
            icon: Icon(Icons.videocam),
            onPressed: (){
@@ -52,20 +59,34 @@ class _HomeState extends State<Home> {
            },
          ),
           IconButton(
-           icon: Icon(Icons.search),
-           onPressed: (){
-             print("Pesquisa");
-           },
-         ),
+            icon: Icon(Icons.account_circle),
+            onPressed: (){
+              print("conta");
+            },
+          ),*/
+
           IconButton(
-           icon: Icon(Icons.account_circle),
-           onPressed: (){
-             print("conta");
+           icon: Icon(Icons.search),
+           onPressed: () async {
+             //show search exibe a pesquisa
+             //ao chamar o search ele vai abri a tela de pesquisa
+             //vai fechar usando o close(no build result) e vai pegar o texto
+                String res = await showSearch(
+                 context: context,
+                 delegate: CustomSearchDelegate());
+                setState(() {
+                  _resultado = res;
+                });
+                 print("resultado digitado" + res);
            },
          ),
+
         ],
       ),
-      body:telas[_indiceAtual],
+      body:Container(
+        padding: EdgeInsets.all(16),
+        child: telas[_indiceAtual],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         //o fixed color vai substituir a cor do icone
           fixedColor: Colors.red ,
